@@ -5,7 +5,10 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Name</th>
+          <th scope="col">Country</th>
+          <th scope="col">City</th>
           <th scope="col">Address</th>
+          <th scope="col">Postal Code</th>
           <th scope="col">Retired</th>
           <th scope="col">Actions</th>
         </tr>
@@ -15,7 +18,10 @@
             <tr>
                 <th scope="row">{{ $player->id }}</th>
                 <td>{{ $player->name }}</td>
-                <td>{{ $player->address }}</td>
+                <td>{{ $player->address->country }}</td>
+                <td>{{ $player->address->city }}</td>
+                <td>{{ $player->address->address }}</td>
+                <td>{{ $player->address->postal_code }}</td>
                 <td class="text-center">
                     <i
                         class="bi  {{ $player->retired ? 'bi-emoji-laughing-fill text-primary' : 'bi-emoji-frown-fill text-danger' }}"
@@ -23,7 +29,6 @@
                     ></i>
 
                 </td>
-                {{-- <td>{{ $player->retired}}</td> --}}
                 <td>
                     <button class="btn btn-success">Show</button>
                     <button class="btn btn-primary">Edit</button>
