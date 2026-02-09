@@ -3,11 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Player extends Model
 {
-    public function address()
-    {
-        return $this->hasOne('App\Address', 'id');
-    }
+    use SoftDeletes;
+    protected $fillable = [
+        'name',
+        'address',
+        'description',
+        'retired'
+    ];
+
 }

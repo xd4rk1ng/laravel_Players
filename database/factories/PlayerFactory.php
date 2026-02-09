@@ -8,7 +8,7 @@ use Faker\Generator as Faker;
 $factory->define(Player::class, function (Faker $faker) {
     return [
         'name'          => $faker->name,
-        'address_id'    => \App\Address::inRandomOrder()->first()->id,
+        'address'       => $faker->text,
         'description'   => $faker->paragraph(50),
         'retired'       => $faker->boolean
     ];

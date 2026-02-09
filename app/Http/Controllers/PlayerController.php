@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Player;
+use App\Address;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
@@ -14,7 +15,7 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        $players = Player::orderBy('id','desc')->with('address')->take(10)->get();
+        $players = Player::orderBy('id','desc')->take(10)->get();
         return view('pages.players.index', ['players' => $players]);
     }
 
@@ -25,7 +26,7 @@ class PlayerController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.players.create');
     }
 
     /**
@@ -36,7 +37,19 @@ class PlayerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name'      => 'required',
+            'address'   => 'required'
+        ]);
+
+        Player::create([
+            'name'          => $request->name,
+            'address'       => $request->address,
+            'description'   => $request->description,
+            'retired'       => $request->retired
+        ]);
+
+        return redirect('players')->with('status', 'Item created successfully');
     }
 
     /**
@@ -47,7 +60,7 @@ class PlayerController extends Controller
      */
     public function show(Player $player)
     {
-        //
+        return view('pages.players.show', ['player'=> $player]);
     }
 
     /**
@@ -58,7 +71,7 @@ class PlayerController extends Controller
      */
     public function edit(Player $player)
     {
-        //
+        return view('pages.players.edit', ['player' => $player]);
     }
 
     /**
@@ -70,7 +83,8 @@ class PlayerController extends Controller
      */
     public function update(Request $request, Player $player)
     {
-        //
+        $player->update($request->all());
+        return redirect('players')->with('status', 'Item edited successfully!');
     }
 
     /**
@@ -81,6 +95,7 @@ class PlayerController extends Controller
      */
     public function destroy(Player $player)
     {
-        //
+        $player->delete();
+        return redirect('players')->with('status', 'Item deleted successfully!');
     }
 }
