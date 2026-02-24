@@ -1,4 +1,5 @@
 <form method="" action="{{ url("players") }}" >
+    <img class="w-100 img-responsive" src="{{ asset('storage/' . $player->image_path )}}">
     <div class="form-group">
         <label for="name">Name</label>
         <input

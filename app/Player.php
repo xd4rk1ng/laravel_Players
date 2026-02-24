@@ -12,7 +12,8 @@ class Player extends Model
         'name',
         'address',
         'description',
-        'retired'
+        'retired',
+        'image_path',
     ];
 
 }

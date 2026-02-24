@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'PlayerController@index');
 
+Route::get('/players/export', "PlayerController@export");
+Route::post('/players/import', "PlayerController@import");
+
 Route::get('/players', 'PlayerController@index');
 Route::get('/players/create', 'PlayerController@create');
 Route::post('/players', 'PlayerController@store');

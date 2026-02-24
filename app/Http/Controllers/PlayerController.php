@@ -3,11 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Player;
-use App\Address;
 use Illuminate\Http\Request;
-
+use App\Exports\PlayersExport;
+use App\Imports\PlayersImport;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 class PlayerController extends Controller
 {
+    /**
+     * Export the resource
+     * 
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export()
+    {
+        return Excel::download(new PlayersExport, 'players.xlsx');
+    }
+
+    /**
+     * Import the resource
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function import()
+    {
+        request()->validate([
+            'import_file' => 'required|file|mimes:xlsx',
+        ]);
+
+        Excel::import(new PlayersImport, request()->file('import_file'));
+
+        return redirect('/')->with('status', 'File imported successfully.');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +43,7 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        $players = Player::orderBy('id','desc')->take(10)->get();
+        $players = Player::orderBy('id', 'desc')->take(10)->get();
         return view('pages.players.index', ['players' => $players]);
     }
 
@@ -38,18 +66,37 @@ class PlayerController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'      => 'required',
-            'address'   => 'required'
+            'name' => 'required',
+            'address' => 'required',
+            'description' => 'required',
+            'retired' => 'required',
+            'image' => 'required|image|max:2048',
         ]);
 
-        Player::create([
-            'name'          => $request->name,
-            'address'       => $request->address,
-            'description'   => $request->description,
-            'retired'       => $request->retired
+        $player = Player::create([
+            'name' => $request->name,
+            'address' => $request->address,
+            'description' => $request->description,
+            'retired' => $request->retired
         ]);
 
-        return redirect('players')->with('status', 'Item created successfully');
+        if ($request->file('image')) {
+            $image = $request->file('image');
+            $imageName = $player->id . '_' . time() . '_' . $image->getClientOriginalName();
+
+            $path = $image
+                ->storeAs(
+                    "images/players/{$player->id}",
+                    $imageName,
+                    'public'
+                );
+
+            $player->update([
+                'image_path' => $path
+            ]);
+        }
+
+        return redirect('players')->with('status', 'Item created successfully.');
     }
 
     /**
@@ -60,7 +107,7 @@ class PlayerController extends Controller
      */
     public function show(Player $player)
     {
-        return view('pages.players.show', ['player'=> $player]);
+        return view('pages.players.show', ['player' => $player]);
     }
 
     /**
@@ -83,8 +130,24 @@ class PlayerController extends Controller
      */
     public function update(Request $request, Player $player)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'address' => 'required',
+            'description' => 'required',
+            'retired' => 'required',
+            'image' => 'image|max:2048',
+        ]);
+
+        $newImage = $request->file('image');
+        if ($newImage) {
+            $newImagePath = $newImage->storeAs($player->image_path, '', 'public');
+        } else
+            $newImagePath = $player->image_path;
+
+        $request->image_path = $newImagePath;
         $player->update($request->all());
-        return redirect('players')->with('status', 'Item edited successfully!');
+
+        return redirect('players')->with('status', 'Player updated successfully.');
     }
 
     /**
@@ -95,7 +158,8 @@ class PlayerController extends Controller
      */
     public function destroy(Player $player)
     {
+        Storage::deleteDirectory('public/images/players/' . $player->id);
         $player->delete();
-        return redirect('players')->with('status', 'Item deleted successfully!');
+        return redirect('players')->with('status', 'Player deleted successfully.');
     }
 }

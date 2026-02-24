@@ -10,6 +10,6 @@ $factory->define(Player::class, function (Faker $faker) {
         'name'          => $faker->name,
         'address'       => $faker->text,
         'description'   => $faker->paragraph(50),
-        'retired'       => $faker->boolean
+        'retired'       => $faker->boolean,
     ];
 });
