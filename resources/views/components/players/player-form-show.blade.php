@@ -1,5 +1,7 @@
 <form method="" action="{{ url("players") }}" >
+    @if($player->image_path)
     <img class="w-100 img-responsive" src="{{ asset('storage/' . $player->image_path )}}">
+    @endif
     <div class="form-group">
         <label for="name">Name</label>
         <input
@@ -46,20 +48,20 @@
         <div class="mb-4">
             <input
                 disabled
-                type="radio" 
-                class="form-check form-check-inline" 
-                name="retired" 
-                id="retired_yes" 
-                value="1" 
+                type="radio"
+                class="form-check form-check-inline"
+                name="retired"
+                id="retired_yes"
+                value="1"
                 {{ $player->retired ? 'checked' : '' }}>
             <label for="retired_yes"> Yes</label>
             <input
                 disabled
-                type="radio" 
-                class="form-check form-check-inline" 
-                name="retired" 
-                id="retired_no" 
-                value="0" 
+                type="radio"
+                class="form-check form-check-inline"
+                name="retired"
+                id="retired_no"
+                value="0"
                 {{ !$player->retired ? 'checked' : '' }}>
             <label for="retired_no"> No</label>
         </div>

@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Player;
+use App\Role;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 

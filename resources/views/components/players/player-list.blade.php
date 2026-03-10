@@ -38,13 +38,15 @@
                 </td>
                 <td class="row">
                     <a class="btn btn-success col" href="{{ url('players', ['player' => $player]) }}">Show</a>
-                    <a class="btn btn-primary col" href="{{ url('players/' . $player->id . '/edit') }}">Edit</a>
-                    <form action="{{ url('players/' . $player->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
+                    @auth
+                        <a class="btn btn-primary col" href="{{ url('players/' . $player->id . '/edit') }}">Edit</a>
+                        <form action="{{ url('players/' . $player->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
 
-                        <button type="submit" class="btn btn-danger col-auto">Delete</button>
-                    </form>
+                            <button type="submit" class="btn btn-danger col-auto">Delete</button>
+                        </form>
+                    @endauth
                 </td>
             </tr>
         @empty
